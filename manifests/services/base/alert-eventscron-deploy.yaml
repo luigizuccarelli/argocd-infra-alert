@@ -1,0 +1,32 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: tcprod-eventscron
+  namespace: tcprod-alert
+spec:
+  schedule: "0/5 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 0
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: tcprod-eventscron
+            image:  quay.io/luigizuccarelli/kubectl:v1.20.0
+            imagePullPolicy: IfNotPresent
+            args:
+            - kubectl
+            - get 
+            - events 
+            - --all-namespaces
+            volumeMounts:
+            - name: kubeconfig
+              mountPath: .kube/config
+              subPath: config
+          restartPolicy: OnFailure
+          volumes:
+          - name: kubeconfig
+            configMap:
+              name: tcprod-alert
+              defaultmode: 420

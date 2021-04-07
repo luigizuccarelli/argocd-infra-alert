@@ -1,0 +1,6 @@
+namePrefix: 
+
+resources:
+  - alert-configmap.yaml
+  - alert-eventscron-deploy.yaml
+
